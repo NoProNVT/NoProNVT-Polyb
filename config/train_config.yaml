@@ -1,9 +1,10 @@
 Data:
 
     img_size: 256
-    route: '../input/kvasirseg/Kvasir-SEG'
-    X_path: '/Kvasir-SEG/images/'
-    Y_path: '/Kvasir-SEG/masks/'
+    route: /kaggle/working/NoProNVT-Polyb
+    X_path: images
+    Y_path: masks
+
     
 
 Hyperparameter:
