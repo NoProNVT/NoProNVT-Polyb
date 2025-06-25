@@ -1,10 +1,9 @@
 Data:
 
     img_size: 256
-    route: /kaggle/working/NoProNVT-Polyb
+    route:  ./data/Kvasir-seg
     X_path: images
     Y_path: masks
-
     
 
 Hyperparameter:
@@ -13,11 +12,10 @@ Hyperparameter:
     test_size : 0.25
     SEED : 1024
     BATCH_SIZE : 128
-    epochs : 500
+    epochs : 100
     max_lr: 0.001
     min_lr: 0.000001
     save_weights_only: True
 
 Model:
-
-  save_path: 'best_model.h5'
+  save_path: ./checkpoints/best_model.weights.h5
