@@ -1,0 +1,128 @@
+Data:
+
+    img_size: 384
+    route:  ./data/Kvasir-seg
+    X_path: images
+    Y_path: masks
+    
+    # Alternative datasets
+    secondary_route: ./data/CVC-ClinicDB
+    secondary_X_path: Original
+    secondary_Y_path: "Ground Truth"
+    use_secondary_dataset: false
+
+Hyperparameter:
+
+    valid_size : 0.15
+    test_size : 0.20
+    SEED : 42
+    BATCH_SIZE : 20  # Increased for better gradient stability
+    epochs : 200  # Increased for more training
+    max_lr: 4e-3  # Increased for faster learning
+    min_lr: 5e-7  # Lower min for better convergence
+    schedule_type: "one_cycle"
+    warmup_pct: 0.3  # Longer warmup for stability
+    save_weights_only: True
+    monitor: "val_mean_dice"
+    mode: "max"
+    dropout_rate: 0.4  # Increased for better regularization
+    use_mixed_precision: true
+    use_advanced_augmentation: true
+    use_mixup: true  # Enabled for better generalization
+    augmentation_strength: 1.0  # Increased for stronger augmentation
+
+Model:
+  save_path: ./checkpoints/best_model.weights.h5
+  backup_path: ./checkpoints/backup_model.weights.h5
+  
+  # Architecture settings
+  backbone: "efficientnetv2-b1"  # Upgraded to larger backbone
+  use_attention: true
+  use_pyramid_pooling: true
+  
+  # Multi-scale training (enabled for robustness)
+  multi_scale_training: true  # Enabled for better performance
+  scale_sizes: [320, 384, 448, 512]  # Added larger scale
+
+Training:
+  # Cross-validation
+  use_kfold: false
+  n_folds: 5
+  
+  # Early stopping (more patient for better training)
+  early_stopping_patience: 35  # Increased patience
+  lr_reduction_patience: 12  # More patient LR reduction
+  lr_reduction_factor: 0.3  # Stronger LR reduction
+  
+  # Loss function configuration (optimized weights)
+  loss_type: "focal_dice"
+  loss_weights:
+    focal_weight: 0.6  # Balanced focal loss
+    dice_weight: 0.4  # Increased dice importance
+    boundary_weight: 0.2  # Increased boundary focus
+    tversky_weight: 0.3  # Added Tversky loss
+  
+  # Class balancing (stronger for imbalanced data)
+  use_class_weights: true
+  pos_weight: 3.5  # Increased for better minority class learning
+
+Hardware:
+  # Memory management
+  enable_memory_growth: true
+  max_memory_limit: 15000  # Increased memory limit
+  
+  # Performance
+  use_xla: true
+  use_tensorrt: false
+  
+  # Parallel processing (optimized for performance)
+  num_parallel_calls: 12  # Increased parallelism
+  prefetch_buffer_size: 12  # Larger prefetch buffer
+
+Kaggle:
+  # Environment detection
+  auto_detect_tpu: true
+  auto_detect_gpu: true
+  
+  # Output settings
+  save_predictions: true
+  prediction_output_dir: "./predictions"
+  
+  # Submission preparation
+  create_submission: true
+  submission_threshold: 0.5
+  
+  # Logging and monitoring
+  verbose_training: true
+  save_training_plots: true
+  plot_output_dir: "./plots"
+
+Advanced:
+  # Ensemble methods (enabled for better performance)
+  use_tta: true  # Enabled for better inference
+  tta_steps: 8  # Increased TTA steps
+  
+  # Post-processing (enhanced)
+  use_crf: true  # Enabled for smoother segmentation
+  morphological_ops: true
+  
+  # Pseudo labeling (enabled for semi-supervised learning)
+  use_pseudo_labeling: true  # Enabled for more data
+  confidence_threshold: 0.85  # Slightly lower threshold
+  
+  # Progressive resizing (enabled for curriculum learning)
+  progressive_resizing: true  # Enabled for better convergence
+  start_size: 256
+  end_size: 512  # Increased final size
+  
+  # Gradient accumulation (simulate larger batch)
+  gradient_accumulation_steps: 2  # Simulate batch_size = 40
+  
+  # Learning rate finder
+  run_lr_finder: false
+  lr_finder_epochs: 5
+  
+  # Additional advanced features
+  label_smoothing: 0.1  # Added label smoothing
+  weight_decay: 1e-4  # Added weight decay
+  ema_decay: 0.9999  # Exponential moving average
